@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=10
+
+USE_PROCD=1
+PROG=/usr/bin/suricata
+
+start_service() {
+	procd_open_instance
+	procd_set_param command $PROG "-q 0 -c /etc/suricata/suricata.yaml -vv"
+	procd_set_param respawn
+	procd_close_instance
+}
+
+stop_service()
+{
+	service_stop ${PROG}
+}
+
