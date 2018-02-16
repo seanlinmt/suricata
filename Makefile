@@ -7,11 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=suricata
-PKG_VERSION:=3.2
+PKG_VERSION:=4.0.4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.openinfosecfoundation.org/download/
-PKG_MD5SUM:=05854b3390ea86fabe73bdb5a90db36c
+PKG_SOURCE_URL:=https://www.openinfosecfoundation.org/download/
+PKG_MD5SUM:=0ed72192cca00bea63ffd5463bacbdd5
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -23,7 +23,7 @@ define Package/suricata
     SUBMENU:=Firewall
     SECTION:=net
     CATEGORY:=Network
-    DEPENDS:=+libyaml +libpcap +libpcre +libgeoip +jansson +libnetfilter-queue +libmagic +libnfnetlink +libpthread +zlib $(ICONV_DEPENDS)
+    DEPENDS:=+libyaml +libpcap +libpcre +jansson +libnetfilter-queue +libmagic +libnfnetlink +libpthread +zlib $(ICONV_DEPENDS)
     TITLE:=OISF Suricata IDS
     URL:=https://www.openinfosecfoundation.org/
 endef
@@ -34,15 +34,17 @@ CONFIGURE_ARGS = \
 	--enable-nfqueue \
 	--enable-gccprotect \
 	--enable-debug \
-	--enable-geoip \
 	--enable-pie \
+	--host=$(ARCH)
 
 define Package/suricata/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/suricata $(1)/usr/bin/suricata
 
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* $(1)/usr/lib/pkgconfig/
 
 	$(INSTALL_DIR) $(1)/etc/suricata
 	$(CP) \
